@@ -1,0 +1,10 @@
+framework module ICSdkEKYC {
+  umbrella header "ICSdkEKYC.h"
+  export *
+
+  module * { export * }
+}
+
+module ICSdkEKYC.Swift {
+  header "ICSdkEKYC-Swift.h"
+}

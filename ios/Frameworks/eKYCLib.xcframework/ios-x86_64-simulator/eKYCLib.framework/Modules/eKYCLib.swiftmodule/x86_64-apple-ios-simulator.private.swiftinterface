@@ -1,0 +1,144 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.3.2 effective-5.10 (swiftlang-6.3.2.1.108 clang-2100.1.1.101)
+// swift-module-flags: -target x86_64-apple-ios12.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name eKYCLib
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -formal-cxx-interoperability-mode=off -interface-compiler-version 6.3.2
+import Accelerate
+import Foundation
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_exported import eKYCLib
+@objc @_inheritsConvenienceInitializers @objcMembers public class Face3DConfig : ObjectiveC.NSObject {
+  @objc public var useGpu: Swift.Bool
+  @objc public var timeLimit: Swift.Int
+  @objc public var framesPerFaceLimit: Swift.Int
+  @objc public var freqz: Swift.Int
+  @objc override dynamic public init()
+  @objc public init(time: Swift.Int)
+  @objc public init(time: Swift.Int, framesPerFace: Swift.Int, freq: Swift.Int)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @objcMembers public class CardWrapper : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc public static func createInstance()
+  @objc public static func deleteInstance()
+  @objc public static func validate(bmp: UIKit.UIImage, cardConfig: eKYCLib.CardConfig) -> Swift.Bool
+  @objc public static func validateV2(bmp: UIKit.UIImage, cardConfig: eKYCLib.CardConfig) -> eKYCLib.MESSAGE_RESULT
+  @objc public static func validateCardFlipping(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_RESULT
+  @objc public static func getDocType(bmp: UIKit.UIImage) -> eKYCLib.ID_TYPE_RESULT
+  @objc deinit
+}
+@objc public enum MESSAGE_RESULT : Swift.Int {
+  case INVALID = -1
+  case NO_FACE = 0
+  case FIT = 1
+  case TOO_FAR = 2
+  case TOO_NEAR = 3
+  case TIME_EXCEED = 4
+  case NOT_STRAIGHT = 5
+  case AWAY_FROM_LEFT = 6
+  case AWAY_FROM_TOP = 7
+  case AWAY_FROM_RIGHT = 8
+  case AWAY_FROM_BOTTOM = 9
+  case AWAY_FROM_CENTER = 10, UNBALANCED = 11, STRAIGHT = 12, LEFT_20_30 = 13, LEFT_OVER_30 = 14, RIGHT_20_30 = 15, RIGHT_OVER_30 = 16, NOT_TRACKED = 17
+  case TRACKED = 18, MANY_FACES = 19, CARD_VALID = 20, NO_CARD = 21, CARD_BRIGHT = 22
+  case CARD_LEFT = 23, CARD_TOP = 24, CARD_RIGHT = 25, CARD_BOTTOM = 26, CARD_BLUR = 27
+  case CARD_NEAR = 28, CARD_FAR = 29, CARD_TILT = 30, LIVENESS_FAILED = 34, LIVENESS_OK = 35
+  case CARD_FLIPPING = 31, CARD_FLIPPING_TIMEOUT = 32, CARD_FLIPPING_DONE = 33
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum MESSAGE_POSE_RESULT : Swift.Int {
+  case FACE_INVALID = -1
+  case FACE_NO_FACE = 0
+  case FACE_TURN_LEFT = 1
+  case FACE_TURN_RIGHT = 2
+  case FACE_TURN_UP = 3
+  case FACE_TURN_DOWN = 4
+  case FACE_STRAIGHT = 5
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum ID_TYPE_RESULT : Swift.Int {
+  case OTHERS = -1
+  case CC = 0
+  case CMND = 1
+  case BLX = 2
+  case HC = 3
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers @objcMembers public class Face3DWrapper : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc public static func getVersion()
+  @objc public static func createInstance(cfg: eKYCLib.Face3DConfig)
+  @objc public static func deleteInstance()
+  @objc deinit
+  @objc public static func processLiveness(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_RESULT
+  @objc public static func process(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_RESULT
+  @objc public static func processV1(bmp: UIKit.UIImage) -> eKYCLib.ResultFace
+  @objc public static func getPose(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_RESULT
+  @objc public static func getPoseV1(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_POSE_RESULT
+  @objc public static func getPoseV2(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_POSE_RESULT
+  @objc public static func notifyCapture()
+  @objc public static func get3DScan() -> Swift.String
+  @objc public static func getTrackingStatus() -> eKYCLib.MESSAGE_RESULT
+  @objc public static func getInfo(image: UIKit.UIImage) -> Foundation.NSArray
+  @objc public static func validate(bmp: UIKit.UIImage) -> eKYCLib.MESSAGE_RESULT
+  @objc public static func captureV1(log1: Swift.String) -> Swift.String
+}
+extension UIKit.UIImage {
+  public func rotate(radians: Swift.Float) -> UIKit.UIImage?
+}
+extension Swift.UnsafeMutablePointer {
+  public func arrayCopying(elementCount: Swift.Int) -> [Pointee]
+}
+extension Swift.Float {
+  public static var random: Swift.Float {
+    get
+  }
+  public static func random(min: Swift.Float, max: Swift.Float) -> Swift.Float
+}
+@objc @_inheritsConvenienceInitializers @objcMembers public class ResultFace : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc public func getResponseCode() -> Swift.Int
+  @objc public func setResponseCode(responseCode: Swift.Int)
+  @objc public func getFaceBox() -> [Swift.Float]
+  @objc public func setFaceBox(faceBox: [Swift.Float])
+  @objc public func getFaceLandmarks() -> [Swift.Float]
+  @objc public func setFaceLandmarks(faceLandmarks: [Swift.Float])
+  @objc public func getDelta() -> [Swift.Float]
+  @objc public func setDelta(delta: [Swift.Float])
+  @objc deinit
+}
+extension Swift.String {
+  public func floatArray() -> [Swift.Float]
+}
+@objc @_inheritsConvenienceInitializers @objcMembers public class CardConfig : ObjectiveC.NSObject {
+  @objc public var isCheckAutoCard: Swift.Bool
+  @objc public var type: Swift.Int
+  @objc public var deviceType: Swift.Int
+  @objc override dynamic public init()
+  @objc public init(isCheckAutoCard: Swift.Bool, type: Swift.Int)
+  @objc deinit
+}
+extension eKYCLib.MESSAGE_RESULT : Swift.Equatable {}
+extension eKYCLib.MESSAGE_RESULT : Swift.Hashable {}
+extension eKYCLib.MESSAGE_RESULT : Swift.RawRepresentable {}
+extension eKYCLib.MESSAGE_POSE_RESULT : Swift.Equatable {}
+extension eKYCLib.MESSAGE_POSE_RESULT : Swift.Hashable {}
+extension eKYCLib.MESSAGE_POSE_RESULT : Swift.RawRepresentable {}
+extension eKYCLib.ID_TYPE_RESULT : Swift.Equatable {}
+extension eKYCLib.ID_TYPE_RESULT : Swift.Hashable {}
+extension eKYCLib.ID_TYPE_RESULT : Swift.RawRepresentable {}

@@ -1,0 +1,2 @@
+-keep class ai.icenter.face3d.native_lib.Face3DConfig { *; }
+-keep class ai.icenter.face3d.native_lib.CardConfig { *; }

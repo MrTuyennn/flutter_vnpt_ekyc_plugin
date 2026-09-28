@@ -1,0 +1,22 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_vnpt_ekyc_plugin (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_vnpt_ekyc_plugin (from `.symlinks/plugins/flutter_vnpt_ekyc_plugin/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_vnpt_ekyc_plugin:
+    :path: ".symlinks/plugins/flutter_vnpt_ekyc_plugin/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
+  flutter_vnpt_ekyc_plugin: 518cd40df35fc0fa9d59081581e61a70d5fb4812
+
+PODFILE CHECKSUM: 3ba3a73b1b12adcf321a227a745625fe0888cc82
+
+COCOAPODS: 1.17.0

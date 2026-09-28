@@ -1,0 +1,10 @@
+framework module eKYCLib {
+  umbrella header "eKYCLib.h"
+  export *
+
+  module * { export * }
+}
+
+module eKYCLib.Swift {
+  header "eKYCLib-Swift.h"
+}
