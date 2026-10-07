@@ -60,7 +60,13 @@ public class VnptEkycPlugin: NSObject, FlutterPlugin, ICEkycCameraDelegate {
     private func finish(_ payload: [String: Any?]) {
         guard let result = pendingResult else { return }
         pendingResult = nil
-        result(payload)
+        if Thread.isMainThread {
+            result(payload)
+        } else {
+            DispatchQueue.main.async {
+                result(payload)
+            }
+        }
     }
 
     private static func topViewController() -> UIViewController? {

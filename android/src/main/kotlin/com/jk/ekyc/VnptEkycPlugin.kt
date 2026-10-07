@@ -45,8 +45,8 @@ class VnptEkycPlugin :
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) = attach(binding)
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) = attach(binding)
-    override fun onDetachedFromActivityForConfigChanges() = detach()
-    override fun onDetachedFromActivity() = detach()
+    override fun onDetachedFromActivityForConfigChanges() = detach(permanent = false)
+    override fun onDetachedFromActivity() = detach(permanent = true)
 
     private fun attach(newBinding: ActivityPluginBinding) {
         binding = newBinding
@@ -54,10 +54,13 @@ class VnptEkycPlugin :
         newBinding.addRequestPermissionsResultListener(this)
     }
 
-    private fun detach() {
+    private fun detach(permanent: Boolean) {
         binding?.removeActivityResultListener(this)
         binding?.removeRequestPermissionsResultListener(this)
         binding = null
+        if (permanent) {
+            finish { it.error("activity_detached", "The host Activity was detached before the eKYC flow completed.", null) }
+        }
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) {
