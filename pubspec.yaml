@@ -1,6 +1,6 @@
 name: flutter_vnpt_ekyc_plugin
 description: "Flutter plugin wrapping the VNPT eKYC native SDKs (Android & iOS)."
-version: 0.0.1
+version: 1.0.1
 publish_to: none
 
 environment:

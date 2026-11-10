@@ -1,3 +1,4 @@
+import Flutter
 import ICSdkEKYC
 import UIKit
 
@@ -66,7 +67,83 @@ enum EkycCameraFactory {
             camera.headersRequest = NSMutableDictionary(dictionary: headers)
         }
 
+        if let theme = config["theme"] as? [String: Any] {
+            applyTheme(camera, theme)
+        }
+
         return camera
+    }
+
+    private static func applyTheme(_ camera: ICEkycCameraViewController, _ theme: [String: Any]) {
+        if let v = color(theme, "headerContentColor") { camera.contentColorHeaderBar = v }
+        if let v = color(theme, "headerBackgroundColor") { camera.backgroundColorHeaderBar = v }
+        if let v = color(theme, "mainContentColor") { camera.textColorContentMain = v }
+        if let v = color(theme, "mainTitleColor") { camera.titleColorMain = v }
+        if let v = color(theme, "mainBackgroundColor") { camera.backgroundColorMainScreen = v }
+        if let v = color(theme, "lineColor") { camera.backgroundColorLine = v }
+        if let v = color(theme, "activeButtonBackgroundColor") { camera.backgroundColorActiveButton = v }
+        if let v = color(theme, "activeButtonTitleColor") { camera.titleColorActiveButton = v }
+        if let v = color(theme, "inactiveButtonBackgroundColor") { camera.backgroundColorDeactiveButton = v }
+        if let v = color(theme, "inactiveButtonTitleColor") { camera.titleColorDeactiveButton = v }
+        if let v = color(theme, "documentCaptureBackgroundColor") { camera.backgroundColorCaptureDocumentScreen = v }
+        if let v = color(theme, "faceCaptureBackgroundColor") { camera.backgroundColorCaptureFaceScreen = v }
+        if let v = color(theme, "faceNoticeEffectColor") { camera.effectColorNoticeFace = v }
+        if let v = color(theme, "faceNoticeTextColor") { camera.textColorNoticeFace = v }
+        if let v = color(theme, "validDocumentEffectColor") { camera.effectColorNoticeValidDocument = v }
+        if let v = color(theme, "validDocumentTextColor") { camera.textColorNoticeValidDocument = v }
+        if let v = color(theme, "invalidDocumentEffectColor") { camera.effectColorNoticeInvalidDocument = v }
+        if let v = color(theme, "invalidDocumentTextColor") { camera.textColorNoticeInvalidDocument = v }
+        if let v = color(theme, "captureButtonTintColor") { camera.tintColorButtonCapture = v }
+        if let v = color(theme, "faceBorderColor") { camera.backgroundColorBorderCaptureFace = v }
+        if let v = color(theme, "popupBackgroundColor") { camera.backgroundColorPopup = v }
+        if let v = color(theme, "popupTextColor") { camera.textColorContentPopup = v }
+        // Chỉ có hiệu lực trên iOS — Android không có màn hình flash riêng.
+        if let v = color(theme, "flashBackgroundColor") { camera.backgroundColorFlash = v }
+        if let v = color(theme, "flashTitleColor") { camera.colorTitleFlash = v }
+
+        if let name = theme["headerButtonPosition"] as? String {
+            switch name {
+            case "left": camera.modeButtonHeaderBar = LeftButton
+            case "right": camera.modeButtonHeaderBar = RightButton
+            default:
+                break
+            }
+        }
+
+        if let v = image(theme, "logo") { camera.logo = v }
+        if let v = image(theme, "logoFaceOval") { camera.logoFaceOval = v }
+        if let v = image(theme, "tutorialQrCodeImage") { camera.imageTutorialQRCode = v }
+        if let v = image(theme, "tutorialFrontImage") { camera.imageTutorialFront = v }
+        if let v = image(theme, "tutorialBackImage") { camera.imageTutorialBack = v }
+        if let v = image(theme, "tutorialBlurImage") { camera.imageTutorialBlur = v }
+        if let v = image(theme, "tutorialGlareImage") { camera.imageTutorialGlare = v }
+        if let v = image(theme, "tutorialLostAngleImage") { camera.imageTutorialLostAngle = v }
+
+        if let v = theme["logoWidth"] as? NSNumber { camera.widthLogo = CGFloat(truncating: v) }
+        if let v = theme["logoHeight"] as? NSNumber { camera.heightLogo = CGFloat(truncating: v) }
+        if let v = theme["showLogo"] as? Bool { camera.isShowLogo = v }
+        // logoFaceOvalWidth/logoFaceOvalHeight, headerBarCornerRadius, buttonCornerRadius,
+        // loadingEffectColor, loadingBackgroundColor: chỉ có hiệu lực trên Android, SDK iOS
+        // không có property tương ứng.
+    }
+
+    // Số nguyên ARGB (ví dụ 0xFF00A96F) — cùng định dạng Android ColorInt đang dùng.
+    private static func color(_ theme: [String: Any], _ key: String) -> UIColor? {
+        guard let v = theme[key] as? NSNumber else { return nil }
+        let argb = v.intValue
+        return UIColor(
+            red: CGFloat((argb >> 16) & 0xFF) / 255,
+            green: CGFloat((argb >> 8) & 0xFF) / 255,
+            blue: CGFloat(argb & 0xFF) / 255,
+            alpha: CGFloat((argb >> 24) & 0xFF) / 255
+        )
+    }
+
+    // iOS nhận ảnh trực tiếp qua bytes (VnptEkycImage.bytes); androidDrawableName bị bỏ qua.
+    private static func image(_ theme: [String: Any], _ key: String) -> UIImage? {
+        guard let entry = theme[key] as? [String: Any] else { return nil }
+        guard let typedData = entry["bytes"] as? FlutterStandardTypedData else { return nil }
+        return UIImage(data: typedData.data)
     }
 
     // Chuỗi rỗng là giá trị mặc định của chính native SDK nên được chấp nhận, ví dụ khi

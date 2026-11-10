@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,46 @@ const _accessToken = String.fromEnvironment('VNPT_ACCESS_TOKEN');
 const _tokenId = String.fromEnvironment('VNPT_TOKEN_ID');
 const _tokenKey = String.fromEnvironment('VNPT_TOKEN_KEY');
 const _offline = _accessToken == '';
+
+final _random = Random();
+
+int _randomColor() => 0xFF000000 | _random.nextInt(0x1000000);
+
+// Test trực quan: mỗi lần chạy đổi màu ngẫu nhiên để xác nhận toàn bộ field của VnptEkycTheme
+// thật sự được native SDK áp dụng lên giao diện chụp.
+VnptEkycTheme _randomTheme() => VnptEkycTheme(
+  headerContentColor: _randomColor(),
+  headerBackgroundColor: _randomColor(),
+  mainContentColor: _randomColor(),
+  mainTitleColor: _randomColor(),
+  mainBackgroundColor: _randomColor(),
+  lineColor: _randomColor(),
+  activeButtonBackgroundColor: _randomColor(),
+  activeButtonTitleColor: _randomColor(),
+  inactiveButtonBackgroundColor: _randomColor(),
+  inactiveButtonTitleColor: _randomColor(),
+  documentCaptureBackgroundColor: _randomColor(),
+  faceCaptureBackgroundColor: _randomColor(),
+  faceNoticeEffectColor: _randomColor(),
+  faceNoticeTextColor: _randomColor(),
+  validDocumentEffectColor: _randomColor(),
+  validDocumentTextColor: _randomColor(),
+  invalidDocumentEffectColor: _randomColor(),
+  invalidDocumentTextColor: _randomColor(),
+  captureButtonTintColor: _randomColor(),
+  faceBorderColor: _randomColor(),
+  popupBackgroundColor: _randomColor(),
+  popupTextColor: _randomColor(),
+  headerButtonPosition: _random.nextBool()
+      ? VnptHeaderButtonPosition.left
+      : VnptHeaderButtonPosition.right,
+  loadingEffectColor: _randomColor(),
+  loadingBackgroundColor: _randomColor(),
+  flashBackgroundColor: _randomColor(),
+  flashTitleColor: _randomColor(),
+  headerBarCornerRadius: _random.nextInt(40).toDouble(),
+  buttonCornerRadius: _random.nextInt(20).toDouble(),
+);
 
 void main() => runApp(const MaterialApp(home: ExamplePage()));
 
@@ -54,6 +95,7 @@ class _ExamplePageState extends State<ExamplePage> {
               ? _last?.hashImageFront
               : null,
           offline: _offline,
+          theme: _randomTheme(),
         ),
       );
       _last = result;

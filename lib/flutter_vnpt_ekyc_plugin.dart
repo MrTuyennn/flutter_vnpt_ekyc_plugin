@@ -8,6 +8,7 @@ export 'src/config.dart';
 export 'src/enums.dart';
 export 'src/identity.dart';
 export 'src/result.dart';
+export 'src/theme.dart';
 
 /// Điểm khởi đầu để gọi vào native SDK VNPT eKYC.
 class VnptEkyc {

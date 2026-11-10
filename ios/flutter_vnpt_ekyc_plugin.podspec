@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_vnpt_ekyc_plugin'
-  s.version          = '0.0.1'
+  s.version          = '1.0.1'
   s.summary          = 'Flutter plugin wrapping the VNPT eKYC native SDKs (Android & iOS).'
   s.description      = 'Flutter plugin wrapping the VNPT eKYC native SDKs (Android & iOS).'
   s.homepage         = 'https://ekyc.vnpt.vn'

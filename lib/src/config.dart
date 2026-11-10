@@ -1,4 +1,5 @@
 import 'enums.dart';
+import 'theme.dart';
 
 /// Tuỳ chọn cho [VnptEkyc.start]. Option để trống (null) sẽ giữ nguyên giá trị mặc định của
 /// native SDK.
@@ -41,6 +42,7 @@ class VnptEkycConfig {
     this.headers,
     this.changeBaseUrl,
     this.offline,
+    this.theme,
   });
 
   /// Giá trị đầy đủ của header, bao gồm cả tiền tố `Bearer `.
@@ -125,6 +127,10 @@ class VnptEkycConfig {
   /// Mặc định false.
   final bool? offline;
 
+  /// Tuỳ biến màu sắc, logo, ảnh hướng dẫn của màn hình native SDK. Xem doc của
+  /// [VnptEkycTheme] và mục "Tuỳ biến giao diện" trong README.
+  final VnptEkycTheme? theme;
+
   Map<String, Object?> toMap() => <String, Object?>{
     'accessToken': accessToken,
     'tokenId': tokenId,
@@ -163,5 +169,6 @@ class VnptEkycConfig {
     'headers': headers,
     'changeBaseUrl': changeBaseUrl,
     'offline': offline,
+    'theme': theme?.toMap(),
   }..removeWhere((_, v) => v == null);
 }

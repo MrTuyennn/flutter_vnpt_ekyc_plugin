@@ -64,7 +64,61 @@ internal object EkycIntentFactory {
             intent.putExtra(K.HEADERS_REQUEST, headers)
         }
 
+        (config["theme"] as? Map<*, *>)?.let { applyTheme(context, intent, it) }
+
         return intent
+    }
+
+    private fun applyTheme(context: Context, intent: Intent, theme: Map<*, *>) {
+        val density = context.resources.displayMetrics.density
+
+        COLOR_KEYS.forEach { (dartKey, intentKey) ->
+            (theme[dartKey] as? Number)?.let { intent.putExtra(intentKey, it.toInt()) }
+        }
+
+        (theme["headerButtonPosition"] as? String)?.let {
+            val value = HEADER_BUTTON_POSITION[it]
+                ?: throw IllegalArgumentException("theme.headerButtonPosition không xác định: $it")
+            intent.putExtra(K.MODE_BUTTON_HEADER_BAR, value.getValue())
+        }
+
+        theme.drawable(context, "logo")?.let { intent.putExtra(K.LOGO, it) }
+        theme.drawable(context, "logoFaceOval")?.let { intent.putExtra(K.LOGO_FACE_OVAL, it) }
+        theme.drawable(context, "tutorialQrCodeImage")?.let { intent.putExtra(K.IMAGE_TUTORIAL_QRCODE, it) }
+        theme.drawable(context, "tutorialFrontImage")?.let { intent.putExtra(K.IMAGE_TUTORIAL_FRONT, it) }
+        theme.drawable(context, "tutorialBackImage")?.let { intent.putExtra(K.IMAGE_TUTORIAL_BACK, it) }
+        theme.drawable(context, "tutorialBlurImage")?.let { intent.putExtra(K.IMAGE_TUTORIAL_BLUR, it) }
+        theme.drawable(context, "tutorialGlareImage")?.let { intent.putExtra(K.IMAGE_TUTORIAL_GLARE, it) }
+        theme.drawable(context, "tutorialLostAngleImage")?.let { intent.putExtra(K.IMAGE_TUTORIAL_LOST_ANGLE, it) }
+
+        (theme["logoWidth"] as? Number)?.let { intent.putExtra(K.WIDTH_LOGO, it.toInt()) }
+        (theme["logoHeight"] as? Number)?.let { intent.putExtra(K.HEIGHT_LOGO, it.toInt()) }
+        (theme["logoFaceOvalWidth"] as? Number)?.let { intent.putExtra(K.WIDTH_LOGO_FACE_OVAL, it.toInt()) }
+        (theme["logoFaceOvalHeight"] as? Number)?.let { intent.putExtra(K.HEIGHT_LOGO_FACE_OVAL, it.toInt()) }
+        (theme["showLogo"] as? Boolean)?.let { intent.putExtra(K.IS_SHOW_LOGO, it) }
+
+        // SDK dùng trực tiếp giá trị này làm bán kính pixel (giá trị mặc định của chính SDK đã
+        // quy đổi dp->px sẵn), nên phải tự nhân density ở đây để field Dart giữ được đơn vị
+        // logical pixel quen thuộc với Flutter.
+        (theme["headerBarCornerRadius"] as? Number)?.let {
+            intent.putExtra(K.BACKGROUND_HEADER_BAR_RADIUS, kotlin.math.ceil(density * it.toFloat()).toInt())
+        }
+        (theme["buttonCornerRadius"] as? Number)?.let {
+            intent.putExtra(K.BUTTON_CORNER_RADIUS, kotlin.math.ceil(density * it.toFloat()).toInt())
+        }
+    }
+
+    // Android chỉ nhận resource ID có sẵn lúc build, nên ảnh phải được host app khai báo sẵn
+    // trong res/drawable/ và truyền vào bằng tên (xem VnptEkycImage.androidDrawableName).
+    private fun Map<*, *>.drawable(context: Context, key: String): Int? {
+        val name = (this[key] as? Map<*, *>)?.get("androidDrawableName") as? String ?: return null
+        val id = context.resources.getIdentifier(name, "drawable", context.packageName)
+        if (id == 0) {
+            throw IllegalArgumentException(
+                "Không tìm thấy drawable \"$name\" trong android/app/src/main/res/drawable/ của app (theme.$key).",
+            )
+        }
+        return id
     }
 
     // Chuỗi rỗng là giá trị mặc định của chính native SDK nên được chấp nhận, ví dụ khi
@@ -130,5 +184,38 @@ internal object EkycIntentFactory {
         "driverLicense" to SDKEnum.DocumentTypeBlockedEnum.DRIVER_LICENSE,
         "citizenIdChip" to SDKEnum.DocumentTypeBlockedEnum.CITIZEN_ID_CHIP,
         "citizenIdChip01072024" to SDKEnum.DocumentTypeBlockedEnum.CITIZEN_ID_CHIP_01072024,
+    )
+    private val HEADER_BUTTON_POSITION = mapOf(
+        "left" to SDKEnum.ModeButtonHeaderBar.LeftButton,
+        "right" to SDKEnum.ModeButtonHeaderBar.RightButton,
+    )
+
+    // flashBackgroundColor/flashTitleColor không có key tương ứng trên Android (chỉ iOS có màn
+    // hình flash riêng) nên không nằm trong bảng này.
+    private val COLOR_KEYS = mapOf(
+        "headerContentColor" to K.CONTENT_COLOR_HEADER_BAR,
+        "headerBackgroundColor" to K.BACKGROUND_COLOR_HEADER_BAR,
+        "mainContentColor" to K.TEXT_COLOR_CONTENT_MAIN,
+        "mainTitleColor" to K.TITLE_COLOR_MAIN,
+        "mainBackgroundColor" to K.BACKGROUND_COLOR_MAIN_SCREEN,
+        "lineColor" to K.BACKGROUND_COLOR_LINE,
+        "activeButtonBackgroundColor" to K.BACKGROUND_COLOR_ACTIVE_BUTTON,
+        "activeButtonTitleColor" to K.TITLE_COLOR_ACTIVE_BUTTON,
+        "inactiveButtonBackgroundColor" to K.BACKGROUND_COLOR_DEACTIVE_BUTTON,
+        "inactiveButtonTitleColor" to K.TITLE_COLOR_DEACTIVE_BUTTON,
+        "documentCaptureBackgroundColor" to K.BACKGROUND_COLOR_CAPTURE_DOCUMENT_SCREEN,
+        "faceCaptureBackgroundColor" to K.BACKGROUND_COLOR_CAPTURE_FACE_SCREEN,
+        "faceNoticeEffectColor" to K.EFFECT_COLOR_NOTICE_FACE,
+        "faceNoticeTextColor" to K.TEXT_COLOR_NOTICE_FACE,
+        "validDocumentEffectColor" to K.EFFECT_COLOR_NOTICE_VALID_DOCUMENT,
+        "validDocumentTextColor" to K.TEXT_COLOR_NOTICE_VALID_DOCUMENT,
+        "invalidDocumentEffectColor" to K.EFFECT_COLOR_NOTICE_INVALID_DOCUMENT,
+        "invalidDocumentTextColor" to K.TEXT_COLOR_NOTICE_INVALID_DOCUMENT,
+        "captureButtonTintColor" to K.TINT_COLOR_BUTTON_CAPTURE,
+        "faceBorderColor" to K.BACKGROUND_COLOR_BORDER_CAPTURE_FACE,
+        "popupBackgroundColor" to K.BACKGROUND_COLOR_POPUP,
+        "popupTextColor" to K.TEXT_COLOR_CONTENT_POPUP,
+        "loadingEffectColor" to K.EFFECT_COLOR_LOADING,
+        "loadingBackgroundColor" to K.BACKGROUND_COLOR_LOADING,
     )
 }
