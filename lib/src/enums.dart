@@ -1,21 +1,21 @@
-/// eKYC flow to launch. Each flow maps to one native SDK screen sequence.
+/// Flow eKYC cần chạy. Mỗi flow tương ứng với một chuỗi màn hình native SDK.
 enum VnptEkycFlow {
-  /// Front + back document capture, portrait capture, OCR and face checks.
+  /// Chụp giấy tờ mặt trước + sau, chụp chân dung, OCR và các check khuôn mặt.
   full,
 
-  /// Front + back document capture and OCR. Passport and driver license skip the back side.
+  /// Chụp giấy tờ mặt trước + sau và OCR. Hộ chiếu và bằng lái sẽ bỏ qua mặt sau.
   ocr,
 
-  /// Front side document capture and OCR only.
+  /// Chỉ chụp mặt trước giấy tờ và OCR.
   ocrFront,
 
-  /// Back side document capture and OCR only. Requires [VnptEkycConfig.hashFrontOcr].
+  /// Chỉ chụp mặt sau giấy tờ và OCR. Bắt buộc có [VnptEkycConfig.hashFrontOcr].
   ocrBack,
 
-  /// Portrait capture with optional liveness, mask and compare checks.
+  /// Chụp chân dung, kèm theo check liveness, che mặt, so khớp (tuỳ chọn).
   face,
 
-  /// QR code scan on a chip-based citizen ID.
+  /// Quét mã QR trên CCCD gắn chip.
   qrCode,
 }
 
@@ -27,12 +27,12 @@ enum VnptDocumentType {
   militaryCard,
 }
 
-/// Portrait capture mode.
+/// Chế độ chụp chân dung.
 enum VnptFaceMode {
-  /// Single-angle capture.
+  /// Chụp một góc duy nhất.
   standard,
 
-  /// Oval far/near capture with 3D scan.
+  /// Chụp Oval xa/gần kèm quét 3D.
   advanced,
 }
 
@@ -42,19 +42,19 @@ enum VnptLivenessMode {
   none,
   iBeta,
 
-  /// Not recommended by VNPT.
+  /// VNPT khuyến cáo không nên dùng.
   standard,
 }
 
-/// Client-side document checks. VNPT describes the exact timing of each level
-/// (before or after capture) slightly differently on Android and iOS.
+/// Các check chất lượng giấy tờ chạy trên client. VNPT mô tả thời điểm kiểm tra chính xác của
+/// từng mức (trước hay sau khi chụp) hơi khác nhau giữa Android và iOS.
 enum VnptValidateDocument { none, basic, medium, advance }
 
 enum VnptFaceOvalMode { farAndNear, farOnly, nearOnly }
 
 enum VnptCameraPosition { front, back }
 
-/// Business flow reported to VNPT: new-to-bank, existing-to-bank, verify.
+/// Loại hình giao dịch báo cáo với VNPT: khách hàng mới, khách hàng cũ, xác thực lại.
 enum VnptBusinessFlow { ntb, etb, verify }
 
 enum VnptBlockedDocument {

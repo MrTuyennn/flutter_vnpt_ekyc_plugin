@@ -1,6 +1,7 @@
 import 'enums.dart';
 
-/// Options for [VnptEkyc.start]. Unset (null) options keep the native SDK default.
+/// Tuỳ chọn cho [VnptEkyc.start]. Option để trống (null) sẽ giữ nguyên giá trị mặc định của
+/// native SDK.
 class VnptEkycConfig {
   const VnptEkycConfig({
     required this.accessToken,
@@ -42,7 +43,7 @@ class VnptEkycConfig {
     this.offline,
   });
 
-  /// Full header value, including the `Bearer ` prefix.
+  /// Giá trị đầy đủ của header, bao gồm cả tiền tố `Bearer `.
   final String accessToken;
   final String tokenId;
   final String tokenKey;
@@ -51,11 +52,11 @@ class VnptEkycConfig {
   final VnptFaceMode? faceMode;
   final VnptLanguage? language;
 
-  /// Echoed back in the server responses so the client can detect tampering.
+  /// Được server trả ngược lại trong response để client phát hiện giả mạo.
   final String? challengeCode;
 
-  /// Links the steps of several flows into one session. Take it from the
-  /// previous [VnptEkycResult.clientSession].
+  /// Nối các bước của nhiều flow vào chung một phiên. Lấy giá trị này từ
+  /// [VnptEkycResult.clientSession] của lần gọi trước đó.
   final String? inputClientSession;
   final VnptBusinessFlow? businessFlow;
   final String? transactionId;
@@ -63,16 +64,16 @@ class VnptEkycConfig {
 
   final bool? showTutorial;
 
-  /// Shows a "Got it" button to skip the tutorial video on the document/portrait
-  /// help screen. Only relevant when [showTutorial] is true. Default false.
+  /// Hiện nút "Đã hiểu" để bỏ qua video hướng dẫn ở màn hình trợ giúp chụp
+  /// giấy tờ/chân dung. Chỉ có tác dụng khi [showTutorial] là true. Mặc định false.
   final bool? enableGotIt;
   final bool? showRequiredPermissionDecree;
 
-  /// Opens the QR scan screen before the front capture. Chip-based ID only.
+  /// Mở màn hình quét QR trước bước chụp mặt trước. Chỉ áp dụng cho CCCD gắn chip.
   final bool? enableScanQrCode;
   final VnptValidateDocument? validateDocument;
 
-  /// Returns province/district/ward codes resolved from the OCR result.
+  /// Trả về mã tỉnh/huyện/xã được suy ra từ kết quả OCR.
   final bool? validatePostcode;
   final bool? checkLivenessCard;
   final List<VnptBlockedDocument>? blockedDocuments;
@@ -83,45 +84,45 @@ class VnptEkycConfig {
   final VnptFaceOvalMode? faceOvalMode;
   final VnptCameraPosition? cameraPositionForPortrait;
 
-  /// 1.0 to 3.0.
+  /// Từ 1.0 đến 3.0.
   final double? zoomCamera;
 
-  /// Compare the portrait with [hashImageCompare] (usually the ID front).
+  /// So khớp ảnh chân dung với [hashImageCompare] (thường là ảnh mặt trước giấy tờ).
   final bool? enableCompare;
   final String? hashImageCompare;
 
-  /// Compare two face photos instead of ID front vs portrait.
+  /// So sánh 2 ảnh khuôn mặt với nhau thay vì mặt trước giấy tờ với ảnh chân dung.
   final bool? enableCompareGeneral;
 
-  /// `strict`, `normal` or `easy`. Used with [enableCompareGeneral].
+  /// `strict`, `normal` hoặc `easy`. Dùng cùng với [enableCompareGeneral].
   final String? thresLevel;
 
-  /// Hash of the front image; required by [VnptEkycFlow.ocrBack].
+  /// Hash của ảnh mặt trước; bắt buộc phải có khi dùng [VnptEkycFlow.ocrBack].
   final String? hashFrontOcr;
 
   final int? timeoutCallApiSeconds;
   final bool? enableCheckVirtualCamera;
   final bool? enableCheckEmulator;
 
-  /// Root on Android, jailbreak on iOS.
+  /// Root trên Android, jailbreak trên iOS.
   final bool? enableCheckRooted;
 
-  /// Extra HTTP headers sent by the SDK.
+  /// Header HTTP bổ sung được SDK gửi kèm.
   final Map<String, String>? headers;
 
-  /// Overrides the API base URL.
+  /// Ghi đè base URL của API.
   final String? changeBaseUrl;
 
-  /// Skips every VNPT server call (OCR, compare, liveness, mask, QR hash upload).
+  /// Bỏ qua mọi lệnh gọi server VNPT (OCR, so khớp mặt, liveness, che mặt, upload hash QR).
   ///
-  /// With this on, [accessToken], [tokenId] and [tokenKey] can be empty strings:
-  /// nothing is sent to VNPT, so no real credentials are needed. Useful to test
-  /// the capture UI and this plugin's wiring before a token is issued.
+  /// Khi bật, [accessToken], [tokenId] và [tokenKey] có thể để chuỗi rỗng: không có gì được
+  /// gửi lên VNPT, nên không cần token thật. Hữu ích để test giao diện chụp và việc kết nối
+  /// plugin trước khi có token thật.
   ///
-  /// The result will only carry image paths, the raw QR string and the
-  /// recorded video path — [VnptEkycResult.ocrResult], `compareFaceResult`,
-  /// `livenessFaceResult` etc. stay null. Mirrors `IS_TURN_OFF_CALL_SERVICE`
-  /// (Android) / `isTurnOffCallService` (iOS). Default false.
+  /// Kết quả trả về lúc này chỉ có đường dẫn ảnh, chuỗi QR thô và đường dẫn video đã quay —
+  /// [VnptEkycResult.ocrResult], `compareFaceResult`, `livenessFaceResult`... đều là null.
+  /// Tương ứng với `IS_TURN_OFF_CALL_SERVICE` (Android) / `isTurnOffCallService` (iOS).
+  /// Mặc định false.
   final bool? offline;
 
   Map<String, Object?> toMap() => <String, Object?>{

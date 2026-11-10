@@ -8,7 +8,7 @@ struct EkycArgumentError: Error {
 enum EkycCameraFactory {
     static func make(flow: String?, config: [String: Any]) throws -> ICEkycCameraViewController {
         guard let camera = ICEkycCameraRouter.createModule() as? ICEkycCameraViewController else {
-            throw EkycArgumentError(message: "Could not create the eKYC camera module.")
+            throw EkycArgumentError(message: "Không tạo được module camera eKYC.")
         }
 
         camera.flowType = try flowType(flow)
@@ -55,7 +55,7 @@ enum EkycCameraFactory {
         if let names = config["blockedDocuments"] as? [String] {
             let values = try names.map { name -> NSNumber in
                 guard let doc = blockedDocuments[name] else {
-                    throw EkycArgumentError(message: "Unknown blocked document: \(name)")
+                    throw EkycArgumentError(message: "Loại giấy tờ bị chặn không xác định: \(name)")
                 }
                 return NSNumber(value: doc.rawValue)
             }
@@ -69,11 +69,11 @@ enum EkycCameraFactory {
         return camera
     }
 
-    // Empty strings are the native SDK's own default and are accepted, e.g. when
-    // config.offline is true and no VNPT credentials are needed.
+    // Chuỗi rỗng là giá trị mặc định của chính native SDK nên được chấp nhận, ví dụ khi
+    // config.offline bật và không cần credentials VNPT.
     private static func required(_ config: [String: Any], _ key: String) throws -> String {
         guard let value = config[key] as? String else {
-            throw EkycArgumentError(message: "config.\(key) is required")
+            throw EkycArgumentError(message: "config.\(key) là bắt buộc")
         }
         return value
     }
@@ -81,7 +81,7 @@ enum EkycCameraFactory {
     private static func pick<T>(_ config: [String: Any], _ key: String, _ table: [String: T]) throws -> T? {
         guard let name = config[key] as? String else { return nil }
         guard let value = table[name] else {
-            throw EkycArgumentError(message: "Unknown \(key): \(name)")
+            throw EkycArgumentError(message: "\(key) không xác định: \(name)")
         }
         return value
     }
@@ -94,7 +94,7 @@ enum EkycCameraFactory {
         case "ocrBack": return ocrBack
         case "face": return face
         case "qrCode": return scanQR
-        default: throw EkycArgumentError(message: "Unknown flow: \(name ?? "nil")")
+        default: throw EkycArgumentError(message: "Flow không xác định: \(name ?? "nil")")
         }
     }
 

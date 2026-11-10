@@ -9,10 +9,9 @@ import 'export.dart';
 
 // flutter run --dart-define=VNPT_ACCESS_TOKEN="Bearer ..." --dart-define=VNPT_TOKEN_ID=... --dart-define=VNPT_TOKEN_KEY=...
 //
-// Without those defines this runs in offline mode (config.offline = true): no VNPT
-// credentials needed, no server calls made. You still get to test the capture UI,
-// camera permission and this plugin's wiring; you only lose the OCR/compare/liveness
-// results, which need a real token.
+// Không truyền các define trên thì chạy ở chế độ offline (config.offline = true): không cần
+// credentials VNPT, không gọi server. Vẫn test được giao diện chụp, quyền camera và việc kết
+// nối plugin; chỉ mất kết quả OCR/so khớp/liveness, vốn cần token thật.
 const _accessToken = String.fromEnvironment('VNPT_ACCESS_TOKEN');
 const _tokenId = String.fromEnvironment('VNPT_TOKEN_ID');
 const _tokenKey = String.fromEnvironment('VNPT_TOKEN_KEY');
@@ -28,11 +27,11 @@ class ExamplePage extends StatefulWidget {
 }
 
 class _ExamplePageState extends State<ExamplePage> {
-  String _output = 'Pick a flow.';
+  String _output = 'Chọn một flow.';
   VnptEkycResult? _last;
 
   Future<void> _run(VnptEkycFlow flow) async {
-    setState(() => _output = 'Running ${flow.name}...');
+    setState(() => _output = 'Đang chạy ${flow.name}...');
     try {
       final result = await VnptEkyc.start(
         flow,
@@ -43,9 +42,11 @@ class _ExamplePageState extends State<ExamplePage> {
           faceMode: VnptFaceMode.advanced,
           showTutorial: true,
           enableGotIt: true,
+          validateDocument: VnptValidateDocument.advance,
+          checkLivenessCard: true,
           livenessMode: VnptLivenessMode.iBeta,
           checkMaskedFace: true,
-          enableCompare: flow == VnptEkycFlow.full,
+          enableCompare: flow == VnptEkycFlow.full || flow == VnptEkycFlow.face,
           hashImageCompare: flow == VnptEkycFlow.face
               ? _last?.hashImageFront
               : null,
@@ -56,8 +57,8 @@ class _ExamplePageState extends State<ExamplePage> {
         ),
       );
       _last = result;
-      // debugPrint still runs in release builds, so this is gated on kDebugMode:
-      // once you switch to a real token for the release build, this stays off.
+      // debugPrint vẫn chạy ở release build, nên phải gate bằng kDebugMode:
+      // khi chuyển sang token thật cho bản release, phần này sẽ tự tắt.
       if (kDebugMode) {
         debugPrint(
           'flutter_vnpt_ekyc_plugin identity (OCR): ${_describeJson(result.identity?.toJson())}',
@@ -84,10 +85,10 @@ class _ExamplePageState extends State<ExamplePage> {
     } on PlatformException catch (e) {
       setState(() => _output = '${e.code}: ${e.message}');
     } catch (e) {
-      // Anything not thrown as PlatformException — e.g. MissingPluginException if the
-      // plugin isn't linked on this platform — still needs to show up as text instead
-      // of crashing to a red error screen.
-      setState(() => _output = 'Unexpected error: $e');
+      // Bất cứ lỗi nào không phải PlatformException — ví dụ MissingPluginException
+      // nếu plugin chưa được link đúng trên nền tảng này — vẫn cần hiện ra dưới dạng
+      // text thay vì crash ra màn hình đỏ.
+      setState(() => _output = 'Lỗi không xác định: $e');
     }
   }
 
@@ -96,11 +97,11 @@ class _ExamplePageState extends State<ExamplePage> {
     if (result == null) return;
     try {
       final dir = await exportEkycResult(result);
-      setState(() => _output = 'Exported to:\n${dir.path}');
+      setState(() => _output = 'Đã export vào:\n${dir.path}');
     } on StateError catch (e) {
       setState(() => _output = e.message);
     } catch (e) {
-      setState(() => _output = 'Unexpected error: $e');
+      setState(() => _output = 'Lỗi không xác định: $e');
     }
   }
 
@@ -114,9 +115,9 @@ class _ExamplePageState extends State<ExamplePage> {
     if (result == null) return const SizedBox.shrink();
 
     final images = {
-      'Front': result.pathImageFront,
-      'Back': result.pathImageBack,
-      'Face':
+      'Mặt trước': result.pathImageFront,
+      'Mặt sau': result.pathImageBack,
+      'Chân dung':
           result.pathImageFace ??
           result.pathImageFaceNear ??
           result.pathImageFaceFar,
@@ -142,7 +143,7 @@ class _ExamplePageState extends State<ExamplePage> {
                 errorBuilder: (context, error, stackTrace) => const SizedBox(
                   width: 110,
                   height: 110,
-                  child: Center(child: Text('(missing)')),
+                  child: Center(child: Text('(không có)')),
                 ),
               ),
             ],
@@ -162,8 +163,8 @@ class _ExamplePageState extends State<ExamplePage> {
             const Padding(
               padding: EdgeInsets.only(bottom: 16),
               child: Text(
-                'No VNPT_ACCESS_TOKEN set: running offline. '
-                'OCR/compare/liveness results will be empty.',
+                'Chưa set VNPT_ACCESS_TOKEN: đang chạy offline. '
+                'Kết quả OCR/so khớp/liveness sẽ rỗng.',
               ),
             ),
           for (final flow in VnptEkycFlow.values)
@@ -178,7 +179,9 @@ class _ExamplePageState extends State<ExamplePage> {
             padding: const EdgeInsets.only(bottom: 8),
             child: OutlinedButton(
               onPressed: _last == null ? null : _export,
-              child: const Text('Export front + back + face + info.json'),
+              child: const Text(
+                'Export mặt trước + mặt sau + chân dung + info.json',
+              ),
             ),
           ),
           const SizedBox(height: 16),

@@ -9,15 +9,16 @@ export 'src/enums.dart';
 export 'src/identity.dart';
 export 'src/result.dart';
 
-/// Entry point to the VNPT eKYC native SDKs.
+/// Điểm khởi đầu để gọi vào native SDK VNPT eKYC.
 class VnptEkyc {
   const VnptEkyc._();
 
-  /// Opens the native SDK for [flow] and completes when it closes.
+  /// Mở native SDK cho [flow] và hoàn tất khi màn hình đó đóng lại.
   ///
-  /// Returns [VnptEkycStatus.cancelled] if the user backs out. Throws a
-  /// `PlatformException` with one of these codes: `no_activity`,
-  /// `already_running`, `camera_permission_denied`, `invalid_argument`, `sdk_error`.
+  /// Trả về [VnptEkycStatus.cancelled] nếu người dùng thoát giữa chừng. Ném ra
+  /// `PlatformException` với một trong các code: `no_activity`,
+  /// `already_running`, `camera_permission_denied`, `invalid_argument`, `sdk_error`,
+  /// `activity_detached` (chỉ Android).
   static Future<VnptEkycResult> start(
     VnptEkycFlow flow,
     VnptEkycConfig config,

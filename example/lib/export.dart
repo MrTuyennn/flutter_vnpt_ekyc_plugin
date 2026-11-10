@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_vnpt_ekyc_plugin/flutter_vnpt_ekyc_plugin.dart';
 
-/// Copies the front, back and face images from a completed `full` [result]
-/// into one new folder under the app's documents directory, together with an
-/// `info.json` holding the CCCD/ID data read by OCR.
+/// Sao chép ảnh mặt trước, mặt sau và chân dung từ [result] của flow `full` đã
+/// chạy xong vào một thư mục mới trong thư mục documents của app, kèm theo file
+/// `info.json` chứa dữ liệu CCCD/giấy tờ đọc được qua OCR.
 ///
-/// Throws a [StateError] if the front, back or face image is missing — e.g.
-/// the flow was not [VnptEkycFlow.full], or the user cancelled partway.
+/// Ném ra [StateError] nếu thiếu ảnh mặt trước, mặt sau hoặc chân dung — ví dụ
+/// flow chạy không phải [VnptEkycFlow.full], hoặc người dùng huỷ giữa chừng.
 Future<Directory> exportEkycResult(VnptEkycResult result) async {
   final front = result.pathImageFront;
   final back = result.pathImageBack;
@@ -19,7 +19,7 @@ Future<Directory> exportEkycResult(VnptEkycResult result) async {
       result.pathImageFaceFar;
   if (front == null || back == null || face == null) {
     throw StateError(
-      'Missing front, back or face image — run VnptEkycFlow.full to completion first.',
+      'Thiếu ảnh mặt trước, mặt sau hoặc chân dung — hãy chạy VnptEkycFlow.full cho xong trước đã.',
     );
   }
 

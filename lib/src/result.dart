@@ -2,17 +2,17 @@ import 'checks.dart';
 import 'identity.dart';
 
 enum VnptEkycStatus {
-  /// The flow finished and the result fields are populated.
+  /// Flow đã chạy xong và các field kết quả đã có dữ liệu.
   completed,
 
-  /// The user left the SDK before the flow finished.
+  /// Người dùng thoát khỏi SDK trước khi flow chạy xong.
   cancelled,
 }
 
-/// Result of [VnptEkyc.start].
+/// Kết quả trả về của [VnptEkyc.start].
 ///
-/// The `*Result` strings are raw JSON returned by the VNPT service. Image paths
-/// point to files in the app sandbox; delete them when done (see [imagePaths]).
+/// Các chuỗi `*Result` là JSON thô do service VNPT trả về. Đường dẫn ảnh trỏ tới file
+/// trong sandbox của app; nhớ xoá khi dùng xong (xem [imagePaths]).
 class VnptEkycResult {
   const VnptEkycResult({
     required this.status,
@@ -100,8 +100,8 @@ class VnptEkycResult {
 
   final VnptEkycStatus status;
 
-  /// Screen the user left from when [status] is [VnptEkycStatus.cancelled].
-  /// Values are platform specific (`Capture_Front` on Android, `CaptureFront` on iOS).
+  /// Màn hình mà người dùng thoát ra khi [status] là [VnptEkycStatus.cancelled].
+  /// Giá trị tuỳ theo nền tảng (`Capture_Front` trên Android, `CaptureFront` trên iOS).
   final String? lastStep;
 
   final String? ocrResult;
@@ -114,18 +114,18 @@ class VnptEkycResult {
   final String? qrCodeResultDetail;
   final String? retryQrCodeResult;
 
-  /// True when ID number, name, gender and birth date of QR and OCR all match.
+  /// True khi số giấy tờ, tên, giới tính, ngày sinh giữa QR và OCR đều khớp nhau.
   final bool? compareQrCodeOcr;
 
-  /// Pass to the next flow as [VnptEkycConfig.inputClientSession].
+  /// Truyền vào flow kế tiếp dưới dạng [VnptEkycConfig.inputClientSession].
   final String? clientSession;
   final String? transactionId;
   final String? transactionPartnerId;
 
-  /// `timeout` when the SDK could not reach the server.
+  /// `timeout` khi SDK không kết nối được tới server.
   final String? networkProblem;
 
-  /// Android only: `Simulator`, `RootedDevice`, `VirtualCamera`.
+  /// Chỉ có trên Android: `Simulator`, `RootedDevice`, `VirtualCamera`.
   final List<String> errorClient;
 
   final String? pathImageFront;
@@ -146,34 +146,34 @@ class VnptEkycResult {
   final String? hashImageQrCode;
   final String? hashFaceScan3d;
 
-  /// Personal data parsed from [ocrResult]; null when the flow did no OCR.
+  /// Dữ liệu cá nhân parse từ [ocrResult]; null khi flow không chạy OCR.
   VnptIdentity? get identity => VnptIdentity.tryParse(ocrResult);
 
-  /// Personal data parsed from [qrCodeResult]; null when no QR was scanned.
+  /// Dữ liệu cá nhân parse từ [qrCodeResult]; null khi không quét QR.
   VnptIdentity? get qrIdentity => VnptIdentity.tryParse(qrCodeResult);
 
-  /// Parsed face-vs-document (or face-vs-face) match check from [compareFaceResult].
-  /// Null when the flow did not run a compare check. See [VnptFaceCompare]'s doc —
-  /// this does not decide pass/fail for you.
+  /// Kết quả so khớp khuôn mặt với giấy tờ (hoặc khuôn mặt với khuôn mặt) parse từ
+  /// [compareFaceResult]. Null khi flow không chạy check so khớp. Xem doc của
+  /// [VnptFaceCompare] — không tự quyết định đậu/rớt giúp bạn.
   VnptFaceCompare? get faceCompare =>
       VnptFaceCompare.tryParse(compareFaceResult);
 
-  /// Parsed liveness check of the portrait capture from [livenessFaceResult].
-  /// Null when the flow did not run a liveness check. See [VnptLiveness]'s doc.
+  /// Kết quả check liveness của ảnh chân dung, parse từ [livenessFaceResult].
+  /// Null khi flow không chạy check liveness. Xem doc của [VnptLiveness].
   VnptLiveness? get faceLiveness => VnptLiveness.tryParse(livenessFaceResult);
 
-  /// Parsed liveness check of the front document capture from [livenessCardFrontResult].
+  /// Kết quả check liveness của ảnh mặt trước giấy tờ, parse từ [livenessCardFrontResult].
   VnptLiveness? get cardFrontLiveness =>
       VnptLiveness.tryParse(livenessCardFrontResult);
 
-  /// Parsed liveness check of the back document capture from [livenessCardBackResult].
+  /// Kết quả check liveness của ảnh mặt sau giấy tờ, parse từ [livenessCardBackResult].
   VnptLiveness? get cardBackLiveness =>
       VnptLiveness.tryParse(livenessCardBackResult);
 
-  /// Parsed masked-face check from [maskedFaceResult]. See [VnptMaskCheck]'s doc.
+  /// Kết quả check che mặt, parse từ [maskedFaceResult]. Xem doc của [VnptMaskCheck].
   VnptMaskCheck? get maskCheck => VnptMaskCheck.tryParse(maskedFaceResult);
 
-  /// Every image file the SDK left on disk. The app is responsible for deleting them.
+  /// Toàn bộ file ảnh mà SDK để lại trên bộ nhớ máy. App tự chịu trách nhiệm xoá.
   Iterable<String> get imagePaths => <String?>[
     pathImageFront,
     pathImageFrontCropped,

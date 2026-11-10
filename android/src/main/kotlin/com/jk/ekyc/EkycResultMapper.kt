@@ -19,6 +19,10 @@ internal object EkycResultMapper {
 
         fun s(key: String): String? = data.getStringExtra(key)
 
+        // COMPARE_QR_CODE_OCR_RESULT không có trạng thái "chưa chạy" ở một số flow (luôn là
+        // false khi QR không chạy); QR_CODE_RESULT mới là tín hiệu đáng tin cậy, nên dựa vào đó.
+        val qrCodeResult = s(R.QR_CODE_RESULT)
+
         return mapOf(
             "status" to "completed",
             "lastStep" to lastStep,
@@ -28,14 +32,14 @@ internal object EkycResultMapper {
             "maskedFaceResult" to s(R.MASKED_FACE_RESULT),
             "livenessCardFrontResult" to s(R.LIVENESS_CARD_FRONT_RESULT),
             "livenessCardBackResult" to s(R.LIVENESS_CARD_BACK_RESULT),
-            "qrCodeResult" to s(R.QR_CODE_RESULT),
+            "qrCodeResult" to qrCodeResult,
             "qrCodeResultDetail" to s(R.DETAIL_QR_CODE_RESULT),
             "retryQrCodeResult" to s(R.RETRY_QRCODE_RESULT),
             "compareQrCodeOcr" to
-                if (data.hasExtra(R.COMPARE_QR_CODE_OCR_RESULT)) {
-                    data.getBooleanExtra(R.COMPARE_QR_CODE_OCR_RESULT, false)
-                } else {
+                if (qrCodeResult.isNullOrEmpty()) {
                     null
+                } else {
+                    data.getBooleanExtra(R.COMPARE_QR_CODE_OCR_RESULT, false)
                 },
             "clientSession" to s(R.CLIENT_SESSION_RESULT),
             "transactionId" to s(R.TRANSACTION_ID_RESULT),

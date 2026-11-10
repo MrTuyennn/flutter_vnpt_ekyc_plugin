@@ -13,9 +13,7 @@ enum EkycResultMapper {
             "qrCodeResult": d.qrCodeResult,
             "qrCodeResultDetail": d.qrCodeResultDetail,
             "retryQrCodeResult": d.retryQRCodeResult,
-            // compareQRCodeOCRResult is a plain BOOL with no "unset" state on iOS.
-            // Mirror Android (which keys off Intent.hasExtra) by treating it as unset
-            // whenever the QR step never produced a result.
+            // compareQRCodeOCRResult không có trạng thái "chưa chạy"; coi là chưa chạy khi QR không chạy.
             "compareQrCodeOcr": qrCodeRan(d) ? d.compareQRCodeOCRResult : nil,
             "clientSession": d.clientSessionResult,
             "transactionId": d.transactionId,
@@ -41,12 +39,11 @@ enum EkycResultMapper {
     }
 
     private static func qrCodeRan(_ d: ICEKYCSavedData) -> Bool {
-        !(d.qrCodeResult?.isEmpty ?? true)
+        !d.qrCodeResult.isEmpty
     }
 
-    // The SDK declares these NSURL properties non-null but leaves them nil for steps that did not run.
-    // Direct property access would trap on that unexpected nil, so we go through KVC instead;
-    // callers pass #keyPath(...) so a typo or SDK rename is still caught at compile time.
+    // SDK khai báo các property NSURL này là non-null nhưng lại để nil ở các bước không chạy;
+    // truy cập trực tiếp sẽ crash, nên dùng KVC thay thế.
     private static func path(_ d: ICEKYCSavedData, _ key: String) -> String? {
         (d.value(forKey: key) as? URL)?.path
     }

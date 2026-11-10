@@ -59,7 +59,7 @@ class VnptEkycPlugin :
         binding?.removeRequestPermissionsResultListener(this)
         binding = null
         if (permanent) {
-            finish { it.error("activity_detached", "The host Activity was detached before the eKYC flow completed.", null) }
+            finish { it.error("activity_detached", "Host Activity đã bị huỷ trước khi flow eKYC chạy xong.", null) }
         }
     }
 
@@ -70,11 +70,11 @@ class VnptEkycPlugin :
         }
         val activity = binding?.activity
         if (activity == null) {
-            result.error("no_activity", "The plugin is not attached to an Activity.", null)
+            result.error("no_activity", "Plugin chưa được gắn với Activity nào.", null)
             return
         }
         if (pendingResult != null) {
-            result.error("already_running", "An eKYC flow is already in progress.", null)
+            result.error("already_running", "Một flow eKYC khác đang chạy.", null)
             return
         }
 
@@ -108,7 +108,7 @@ class VnptEkycPlugin :
         if (activity != null && grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
             launch(activity)
         } else {
-            finish { it.error("camera_permission_denied", "Camera permission was denied.", null) }
+            finish { it.error("camera_permission_denied", "Quyền camera đã bị từ chối.", null) }
         }
         return true
     }
@@ -146,7 +146,7 @@ class VnptEkycPlugin :
             "ocrBack" -> VnptRearActivity::class.java
             "face" -> VnptPortraitActivity::class.java
             "qrCode" -> VnptQRCodeActivity::class.java
-            else -> throw IllegalArgumentException("Unknown flow: $flow")
+            else -> throw IllegalArgumentException("Flow không xác định: $flow")
         }
     }
 }

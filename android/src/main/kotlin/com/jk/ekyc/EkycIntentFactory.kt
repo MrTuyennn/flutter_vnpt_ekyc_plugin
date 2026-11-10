@@ -8,7 +8,7 @@ import com.vnptit.idg.sdk.utils.SDKEnum
 internal object EkycIntentFactory {
 
     fun build(context: Context, flow: String?, config: Map<String, Any?>?): Intent {
-        requireNotNull(config) { "config is required" }
+        requireNotNull(config) { "config là bắt buộc" }
         val intent = Intent(context, VnptEkycPlugin.activityFor(flow))
 
         intent.putExtra(K.ACCESS_TOKEN, config.string("accessToken"))
@@ -53,7 +53,7 @@ internal object EkycIntentFactory {
 
         (config["blockedDocuments"] as? List<*>)?.let { names ->
             val values = names.map { name ->
-                BLOCKED[name] ?: throw IllegalArgumentException("Unknown blocked document: $name")
+                BLOCKED[name] ?: throw IllegalArgumentException("Loại giấy tờ bị chặn không xác định: $name")
             }
             intent.putExtra(K.LIST_BLOCKED_DOCUMENT, values.map { it.getValue() }.toIntArray())
         }
@@ -67,10 +67,10 @@ internal object EkycIntentFactory {
         return intent
     }
 
-    // Empty strings are the native SDK's own default and are accepted, e.g. when
-    // config.offline is true and no VNPT credentials are needed.
+    // Chuỗi rỗng là giá trị mặc định của chính native SDK nên được chấp nhận, ví dụ khi
+    // config.offline bật và không cần credentials VNPT.
     private fun Map<String, Any?>.string(key: String): String =
-        this[key] as? String ?: throw IllegalArgumentException("config.$key is required")
+        this[key] as? String ?: throw IllegalArgumentException("config.$key là bắt buộc")
 
     private fun Map<String, Any?>.optString(key: String): String? = this[key] as? String
 
@@ -78,7 +78,7 @@ internal object EkycIntentFactory {
 
     private fun <T> Map<String, Any?>.enum(key: String, table: Map<String, T>): T? {
         val name = this[key] as? String ?: return null
-        return table[name] ?: throw IllegalArgumentException("Unknown $key: $name")
+        return table[name] ?: throw IllegalArgumentException("$key không xác định: $name")
     }
 
     private val DOCUMENT_TYPE = mapOf(

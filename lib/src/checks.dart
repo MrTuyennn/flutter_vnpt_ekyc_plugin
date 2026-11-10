@@ -1,13 +1,13 @@
 import 'json_envelope.dart';
 
-/// Result of a face-compare check (`VnptEkycResult.compareFaceResult`).
+/// Kết quả check so khớp khuôn mặt (`VnptEkycResult.compareFaceResult`).
 ///
-/// Field names follow VNPT's `CompareFaceObject` model. VNPT does not publicly
-/// document the exact values [result] takes, so this only structures the JSON —
-/// it does not decide pass/fail for you. Confirm the actual values with a live
-/// response (or VNPT support) before branching business logic on them, and treat
-/// this as informational: the authoritative accept/reject decision for an eKYC
-/// case should be made by your backend re-checking with VNPT, not the client SDK.
+/// Tên field theo đúng model `CompareFaceObject` của VNPT. VNPT không công bố công khai các
+/// giá trị cụ thể mà [result] có thể nhận, nên class này chỉ cấu trúc hoá lại JSON — không tự
+/// quyết định đậu/rớt giúp bạn. Hãy xác nhận giá trị thật bằng response thật (hoặc hỏi VNPT
+/// support) trước khi dùng để rẽ nhánh nghiệp vụ, và coi đây chỉ là thông tin tham khảo: quyết
+/// định đậu/rớt chính thức cho một hồ sơ eKYC nên do backend của bạn tự kiểm tra lại với VNPT,
+/// không phải SDK client.
 class VnptFaceCompare {
   const VnptFaceCompare({
     this.message,
@@ -30,10 +30,10 @@ class VnptFaceCompare {
 
   final String? message;
 
-  /// Raw match outcome as returned by VNPT. See the class doc: not documented publicly.
+  /// Kết quả so khớp thô do VNPT trả về. Xem doc của class: không được công bố công khai.
   final String? result;
 
-  /// Similarity score. Range/scale not documented by VNPT.
+  /// Điểm tương đồng. Khoảng giá trị/thang đo không được VNPT công bố.
   final double? probability;
   final bool? multipleFaces;
 
@@ -45,12 +45,12 @@ class VnptFaceCompare {
   }..removeWhere((_, v) => v == null);
 }
 
-/// Result of a liveness check — used for `livenessFaceResult`,
-/// `livenessCardFrontResult` and `livenessCardBackResult`, which all share this shape.
+/// Kết quả check liveness — dùng chung cho `livenessFaceResult`,
+/// `livenessCardFrontResult` và `livenessCardBackResult`, cả 3 đều có cùng cấu trúc này.
 ///
-/// Field names follow VNPT's `LivenessResult` model. See [VnptFaceCompare]'s doc:
-/// the values of [liveness] are not documented publicly by VNPT — verify with a
-/// live response before branching on them.
+/// Tên field theo đúng model `LivenessResult` của VNPT. Xem doc của [VnptFaceCompare]:
+/// giá trị của [liveness] không được VNPT công bố công khai — hãy xác nhận bằng response
+/// thật trước khi dùng để rẽ nhánh.
 class VnptLiveness {
   const VnptLiveness({
     this.message,
@@ -76,7 +76,7 @@ class VnptLiveness {
 
   final String? message;
 
-  /// Raw liveness outcome as returned by VNPT. See the class doc: not documented publicly.
+  /// Kết quả liveness thô do VNPT trả về. Xem doc của class: không được công bố công khai.
   final String? liveness;
   final String? isEyeOpen;
   final bool? faceSwapping;
@@ -93,10 +93,10 @@ class VnptLiveness {
   }..removeWhere((_, v) => v == null);
 }
 
-/// Result of the masked-face check (`VnptEkycResult.maskedFaceResult`).
+/// Kết quả check che mặt (`VnptEkycResult.maskedFaceResult`).
 ///
-/// Field name follows VNPT's `MaskedObject` model. See [VnptFaceCompare]'s doc:
-/// the value of [masked] is not documented publicly by VNPT.
+/// Tên field theo đúng model `MaskedObject` của VNPT. Xem doc của [VnptFaceCompare]:
+/// giá trị của [masked] không được VNPT công bố công khai.
 class VnptMaskCheck {
   const VnptMaskCheck({this.masked});
 

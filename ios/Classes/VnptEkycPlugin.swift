@@ -19,16 +19,16 @@ public class VnptEkycPlugin: NSObject, FlutterPlugin, ICEkycCameraDelegate {
             return
         }
         guard pendingResult == nil else {
-            result(FlutterError(code: "already_running", message: "An eKYC flow is already in progress.", details: nil))
+            result(FlutterError(code: "already_running", message: "Một flow eKYC khác đang chạy.", details: nil))
             return
         }
         guard let args = call.arguments as? [String: Any],
               let config = args["config"] as? [String: Any] else {
-            result(FlutterError(code: "invalid_argument", message: "config is required", details: nil))
+            result(FlutterError(code: "invalid_argument", message: "config là bắt buộc", details: nil))
             return
         }
         guard let presenter = Self.topViewController() else {
-            result(FlutterError(code: "no_activity", message: "No view controller to present the SDK from.", details: nil))
+            result(FlutterError(code: "no_activity", message: "Không có view controller nào để hiển thị SDK.", details: nil))
             return
         }
 
@@ -52,7 +52,7 @@ public class VnptEkycPlugin: NSObject, FlutterPlugin, ICEkycCameraDelegate {
     }
 
     public func icEkycCameraClosed(with type: ScreenType) {
-        // Done is reported through icEkycGetResult.
+        // Trạng thái Done được báo qua icEkycGetResult.
         if type == Done { return }
         finish(["status": "cancelled", "lastStep": EkycResultMapper.stepName(type)])
     }

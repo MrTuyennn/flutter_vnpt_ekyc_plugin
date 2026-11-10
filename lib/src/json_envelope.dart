@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-/// Unwraps a VNPT service JSON string of the shape `{"message": ..., "object":
-/// {...}}` (or a flat object, for some QR results) into a flat string-keyed map.
-/// Returns null if [json] is null or not a JSON object.
+/// Bóc chuỗi JSON của service VNPT có dạng `{"message": ..., "object": {...}}`
+/// (hoặc một object phẳng, với một số kết quả QR) thành map phẳng có key là string.
+/// Trả về null nếu [json] là null hoặc không phải JSON object.
 Map<String, Object?>? unwrapVnptJson(String? json) {
   if (json == null) return null;
   final Object? decoded;
@@ -20,7 +20,7 @@ Map<String, Object?>? unwrapVnptJson(String? json) {
   };
 }
 
-/// Reads [key] from [data] as a trimmed, non-empty string, or null.
+/// Đọc [key] từ [data] dưới dạng chuỗi đã trim và không rỗng, hoặc null.
 String? stringField(Map<String, Object?> data, String key) {
   final value = data[key];
   if (value == null) return null;

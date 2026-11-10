@@ -1,9 +1,9 @@
 import 'json_envelope.dart';
 
-/// `tampering.is_legal` has been observed as both a real JSON boolean
-/// (`true`/`false`) and the string `"yes"`/`"no"` depending on VNPT's
-/// service version — this accepts either instead of assuming one shape.
-/// `null` (unknown) for anything else, rather than silently defaulting to
+/// `tampering.is_legal` được quan sát thấy có khi là boolean JSON thật
+/// (`true`/`false`), có khi là chuỗi `"yes"`/`"no"` tuỳ phiên bản service của VNPT
+/// — hàm này chấp nhận cả 2 dạng thay vì giả định chỉ một kiểu. Trả về `null`
+/// (không xác định) cho mọi trường hợp khác, thay vì âm thầm mặc định thành
 /// `false`.
 bool? _parseIsLegal(Object? raw) {
   if (raw is bool) return raw;
@@ -20,11 +20,11 @@ bool? _parseIsLegal(Object? raw) {
   return null;
 }
 
-/// Personal data read from an ID document by OCR (or from its QR code).
+/// Dữ liệu cá nhân đọc được từ giấy tờ qua OCR (hoặc từ mã QR của giấy tờ).
 ///
-/// Built from the VNPT service JSON; the field names follow the SDK models
-/// (`IdentityCard`, `Passport`, `DriverLicense`, `QRCode`). Fields absent for the
-/// scanned document type are null. This is personal data: do not log it.
+/// Được dựng từ JSON của service VNPT; tên field theo đúng model của SDK
+/// (`IdentityCard`, `Passport`, `DriverLicense`, `QRCode`). Field không có ở loại giấy tờ
+/// đang quét sẽ là null. Đây là dữ liệu cá nhân: không log ra ngoài.
 class VnptIdentity {
   const VnptIdentity({
     this.id,
@@ -50,8 +50,8 @@ class VnptIdentity {
     this.raw = const <String, Object?>{},
   });
 
-  /// Parses the `ocrResult` or `qrCodeResult` JSON string. Returns null when it
-  /// is missing or not a JSON object.
+  /// Parse chuỗi JSON `ocrResult` hoặc `qrCodeResult`. Trả về null nếu thiếu
+  /// hoặc không phải một JSON object.
   static VnptIdentity? tryParse(String? json) {
     final data = unwrapVnptJson(json);
     if (data == null) return null;
@@ -88,17 +88,17 @@ class VnptIdentity {
     );
   }
 
-  /// Citizen ID / ID card number.
+  /// Số CCCD / CMND.
   final String? id;
   final String? name;
 
-  /// Kept as printed on the document (`dd/MM/yyyy`).
+  /// Giữ nguyên như in trên giấy tờ (`dd/MM/yyyy`).
   final String? birthDay;
   final String? gender;
   final String? nationality;
   final String? cardType;
 
-  /// VNPT document type id.
+  /// Mã loại giấy tờ theo quy ước của VNPT.
   final String? typeId;
   final String? issueDate;
   final String? issuePlace;
@@ -106,26 +106,27 @@ class VnptIdentity {
   final String? originLocation;
   final String? recentLocation;
 
-  /// Passport only.
+  /// Chỉ có ở hộ chiếu.
   final String? passportNo;
   final String? citizenId;
   final String? codeNumber;
   final String? birthPlace;
 
-  /// Driver license only.
+  /// Chỉ có ở bằng lái xe.
   final String? rank;
 
   final String? expireWarning;
   final List<String> warnings;
 
-  /// Tampering check of the document image; null if the service did not report it.
+  /// Kết quả check làm giả ảnh giấy tờ; null nếu service không trả về thông tin này.
   final bool? isLegal;
 
-  /// Every field of the JSON, for fields not modelled above (e.g. post codes).
+  /// Toàn bộ field của JSON, bao gồm cả những field chưa được model hoá ở trên
+  /// (ví dụ mã bưu chính).
   final Map<String, Object?> raw;
 
-  /// The typed fields above as a flat, JSON-encodable map (absent fields omitted).
-  /// Use [raw] instead for the untouched OCR/QR JSON.
+  /// Các field đã định kiểu ở trên, gộp thành map phẳng có thể encode JSON (field nào
+  /// không có sẽ bị bỏ qua). Dùng [raw] nếu cần JSON OCR/QR gốc, chưa qua xử lý.
   Map<String, Object?> toJson() => <String, Object?>{
     'id': id,
     'name': name,

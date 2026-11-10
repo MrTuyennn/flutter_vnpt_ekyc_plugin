@@ -19,7 +19,7 @@ class MethodChannelVnptEkyc extends VnptEkycPlatform {
     if (response == null) {
       throw PlatformException(
         code: 'sdk_error',
-        message: 'The native SDK returned no result.',
+        message: 'Native SDK không trả về kết quả nào.',
       );
     }
     return VnptEkycResult.fromMap(response);
