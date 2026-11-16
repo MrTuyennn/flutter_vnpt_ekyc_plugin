@@ -34,6 +34,7 @@ enum EkycCameraFactory {
         if let v = config["thresLevel"] as? String { camera.thresLevel = v }
         if let v = config["hashFrontOcr"] as? String { camera.hashFrontOCR = v }
         if let v = config["changeBaseUrl"] as? String { camera.changeBaseUrl = v }
+        if let v = config["encryptPublicKey"] as? String { camera.encryptPublicKey = v }
 
         if let v = config["showTutorial"] as? Bool { camera.isShowTutorial = v }
         if let v = config["enableGotIt"] as? Bool { camera.isEnableGotIt = v }
@@ -49,6 +50,7 @@ enum EkycCameraFactory {
         if let v = config["enableCheckEmulator"] as? Bool { camera.isEnableCheckSimulator = v }
         if let v = config["enableCheckRooted"] as? Bool { camera.isEnableCheckJailbroken = v }
         if let v = config["offline"] as? Bool { camera.isTurnOffCallService = v }
+        if let v = config["enableEncrypt"] as? Bool { camera.isEnableEncrypt = v }
 
         if let v = config["zoomCamera"] as? NSNumber { camera.zoomCamera = CGFloat(truncating: v) }
         if let v = config["timeoutCallApiSeconds"] as? NSNumber { camera.timeoutCallApi = v.intValue }
@@ -71,7 +73,28 @@ enum EkycCameraFactory {
             applyTheme(camera, theme)
         }
 
+        if let endpoints = config["endpoints"] as? [String: Any] {
+            applyEndpoints(camera, endpoints)
+        }
+
         return camera
+    }
+
+    private static func applyEndpoints(_ camera: ICEkycCameraViewController, _ endpoints: [String: Any]) {
+        if let v = endpoints["uploadImage"] as? String { camera.urlUploadImage = v }
+        if let v = endpoints["ocr"] as? String { camera.urlOcr = v }
+        if let v = endpoints["ocrFront"] as? String { camera.urlOcrFront = v }
+        if let v = endpoints["compare"] as? String { camera.urlCompare = v }
+        if let v = endpoints["livenessFace"] as? String { camera.urlLivenessFace = v }
+        if let v = endpoints["livenessCard"] as? String { camera.urlLivenessCard = v }
+        if let v = endpoints["checkMaskedFace"] as? String { camera.urlCheckMaskedFace = v }
+        if let v = endpoints["logSdk"] as? String { camera.urlLogSdk = v }
+        if let v = endpoints["compareGeneral"] as? String { camera.urlCompareGeneral = v }
+        if let v = endpoints["verifyFace"] as? String { camera.urlVerifyFace = v }
+        if let v = endpoints["addFace"] as? String { camera.urlAddFace = v }
+        if let v = endpoints["addCardId"] as? String { camera.urlAddCardId = v }
+        if let v = endpoints["searchFace"] as? String { camera.urlSearchFace = v }
+        if let v = endpoints["livenessFace3D"] as? String { camera.urlLivenessFace3D = v }
     }
 
     private static func applyTheme(_ camera: ICEkycCameraViewController, _ theme: [String: Any]) {

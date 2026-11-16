@@ -32,6 +32,7 @@ internal object EkycIntentFactory {
         config.optString("thresLevel")?.let { intent.putExtra(K.THRES_LEVEL, it) }
         config.optString("hashFrontOcr")?.let { intent.putExtra(K.HASH_FRONT_OCR, it) }
         config.optString("changeBaseUrl")?.let { intent.putExtra(K.CHANGE_BASE_URL, it) }
+        config.optString("encryptPublicKey")?.let { intent.putExtra(K.PUBLIC_KEY, it) }
 
         config.bool("showTutorial")?.let { intent.putExtra(K.IS_SHOW_TUTORIAL, it) }
         config.bool("enableGotIt")?.let { intent.putExtra(K.IS_ENABLE_GOT_IT, it) }
@@ -47,6 +48,7 @@ internal object EkycIntentFactory {
         config.bool("enableCheckEmulator")?.let { intent.putExtra(K.IS_ENABLE_CHECK_EMULATOR, it) }
         config.bool("enableCheckRooted")?.let { intent.putExtra(K.IS_ENABLE_CHECK_ROOTED, it) }
         config.bool("offline")?.let { intent.putExtra(K.IS_TURN_OFF_CALL_SERVICE, it) }
+        config.bool("enableEncrypt")?.let { intent.putExtra(K.IS_ENABLE_ENCRYPT, it) }
 
         (config["zoomCamera"] as? Number)?.let { intent.putExtra(K.ZOOM_CAMERA, it.toFloat()) }
         (config["timeoutCallApiSeconds"] as? Number)?.let { intent.putExtra(K.TIMEOUT_CALL_API, it.toInt()) }
@@ -65,8 +67,15 @@ internal object EkycIntentFactory {
         }
 
         (config["theme"] as? Map<*, *>)?.let { applyTheme(context, intent, it) }
+        (config["endpoints"] as? Map<*, *>)?.let { applyEndpoints(intent, it) }
 
         return intent
+    }
+
+    private fun applyEndpoints(intent: Intent, endpoints: Map<*, *>) {
+        ENDPOINT_KEYS.forEach { (dartKey, intentKey) ->
+            (endpoints[dartKey] as? String)?.let { intent.putExtra(intentKey, it) }
+        }
     }
 
     private fun applyTheme(context: Context, intent: Intent, theme: Map<*, *>) {
@@ -217,5 +226,19 @@ internal object EkycIntentFactory {
         "popupTextColor" to K.TEXT_COLOR_CONTENT_POPUP,
         "loadingEffectColor" to K.EFFECT_COLOR_LOADING,
         "loadingBackgroundColor" to K.BACKGROUND_COLOR_LOADING,
+    )
+
+    // Chỉ gồm các API mà AAR Android hiện vendor trong plugin có constant tương ứng. Các field
+    // "endpoints" chỉ-iOS (compareGeneral/verifyFace/addFace/addCardId/searchFace/
+    // livenessFace3D) không có mặt ở đây nên bị bỏ qua trên Android, xem doc VnptEkycEndpoints.
+    private val ENDPOINT_KEYS = mapOf(
+        "uploadImage" to K.URL_UPLOAD_IMAGE,
+        "ocr" to K.URL_OCR,
+        "ocrFront" to K.URL_OCR_FRONT,
+        "compare" to K.URL_COMPARE,
+        "livenessFace" to K.URL_LIVENESS_FACE,
+        "livenessCard" to K.URL_LIVENESS_CARD,
+        "checkMaskedFace" to K.URL_CHECK_MASKED_FACE,
+        "logSdk" to K.URL_LOG_SDK,
     )
 }

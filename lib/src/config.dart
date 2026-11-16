@@ -1,3 +1,4 @@
+import 'endpoints.dart';
 import 'enums.dart';
 import 'theme.dart';
 
@@ -41,6 +42,9 @@ class VnptEkycConfig {
     this.enableCheckRooted,
     this.headers,
     this.changeBaseUrl,
+    this.enableEncrypt,
+    this.encryptPublicKey,
+    this.endpoints,
     this.offline,
     this.theme,
   });
@@ -115,6 +119,19 @@ class VnptEkycConfig {
   /// Ghi đè base URL của API.
   final String? changeBaseUrl;
 
+  /// Mã hoá request/response giữa SDK và server bằng RSA. Mặc định false. Bật cùng với
+  /// [encryptPublicKey] (bắt buộc khi bật). Tương ứng `IS_ENABLE_ENCRYPT` (Android) /
+  /// `isEnableEncrypt` (iOS).
+  final bool? enableEncrypt;
+
+  /// Public key RSA dùng để tạo secret key mã hoá/giải mã request/response — bắt buộc khi
+  /// [enableEncrypt] = true. Tương ứng `PUBLIC_KEY` (Android) / `encryptPublicKey` (iOS).
+  final String? encryptPublicKey;
+
+  /// Ghi đè URL của từng API riêng lẻ (khác domain/khác path nhau giữa các API) — xem
+  /// [VnptEkycEndpoints]. Khác với [changeBaseUrl] (chỉ đổi domain gốc).
+  final VnptEkycEndpoints? endpoints;
+
   /// Bỏ qua mọi lệnh gọi server VNPT (OCR, so khớp mặt, liveness, che mặt, upload hash QR).
   ///
   /// Khi bật, [accessToken], [tokenId] và [tokenKey] có thể để chuỗi rỗng: không có gì được
@@ -168,6 +185,9 @@ class VnptEkycConfig {
     'enableCheckRooted': enableCheckRooted,
     'headers': headers,
     'changeBaseUrl': changeBaseUrl,
+    'enableEncrypt': enableEncrypt,
+    'encryptPublicKey': encryptPublicKey,
+    'endpoints': endpoints?.toMap(),
     'offline': offline,
     'theme': theme?.toMap(),
   }..removeWhere((_, v) => v == null);

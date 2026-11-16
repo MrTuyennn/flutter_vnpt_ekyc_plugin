@@ -321,6 +321,49 @@ Làm tương tự cho `logoFaceOval` và 6 ảnh `tutorial*Image` (`tutorialQrCo
 `tutorialFrontImage`, `tutorialBackImage`, `tutorialBlurImage`, `tutorialGlareImage`,
 `tutorialLostAngleImage`) — chỉ khác tên file và tên field.
 
+### Đổi endpoint API / mã hoá request (tuỳ chọn)
+
+Tất cả field dưới đây đều **tuỳ chọn (optional)** — không truyền (hoặc truyền `null`) thì SDK
+dùng nguyên server và hành vi mặc định của VNPT, không cần quan tâm tới mục này:
+
+```dart
+VnptEkycConfig(
+  accessToken: '...',
+  tokenId: '...',
+  tokenKey: '...',
+
+  // Đổi domain gốc — các path con vẫn cố định theo SDK.
+  changeBaseUrl: 'https://api-cua-ban.example.com',
+
+  // Đổi URL đầy đủ (domain + path) cho từng API riêng lẻ — ưu tiên hơn changeBaseUrl.
+  // fromBase chỉ là tiện ích ghép chuỗi ở Dart, không liên quan tới changeBaseUrl ở trên.
+  endpoints: VnptEkycEndpoints.fromBase(
+    'https://api-cua-ban.example.com',
+    uploadImage: '/face',
+    ocrFront: '/cccd-front',
+    ocr: '/cccd-back',
+  ),
+
+  // Mã hoá RSA request/response giữa SDK và server.
+  enableEncrypt: true,
+  encryptPublicKey: '-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----',
+),
+```
+
+- `changeBaseUrl` — đổi domain mà SDK gọi tới, path con vẫn giữ nguyên theo SDK.
+- `endpoints` (`VnptEkycEndpoints`) — đổi URL đầy đủ cho từng API (upload ảnh, OCR, so khớp,
+  liveness, kiểm tra che mặt, log...), dùng khi path thật khác nhau giữa các API hoặc muốn trỏ
+  từng API tới 1 service riêng. 8 field (`uploadImage`, `ocr`, `ocrFront`, `compare`,
+  `livenessFace`, `livenessCard`, `checkMaskedFace`, `logSdk`) chạy được cả Android và iOS; 6
+  field còn lại (`compareGeneral`, `verifyFace`, `addFace`, `addCardId`, `searchFace`,
+  `livenessFace3D`) **chỉ có hiệu lực trên iOS** — bản AAR Android hiện vendor trong plugin chưa
+  có constant tương ứng, truyền vào sẽ bị bỏ qua trên Android.
+- `enableEncrypt`/`encryptPublicKey` — bật mã hoá RSA 2 chiều cho request/response; `enableEncrypt:
+  true` thì `encryptPublicKey` là bắt buộc.
+- Dù dùng `changeBaseUrl`/`endpoints` để trỏ về server riêng, server đó vẫn phải trả lời đúng
+  format mà SDK native mong đợi — SDK không biết (và không cần biết) server đứng sau URL đó là
+  VNPT hay của bạn.
+
 ## Cấu hình theo nền tảng
 
 **Android**

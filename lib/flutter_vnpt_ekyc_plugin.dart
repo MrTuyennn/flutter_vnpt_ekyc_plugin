@@ -5,6 +5,7 @@ import 'src/result.dart';
 
 export 'src/checks.dart';
 export 'src/config.dart';
+export 'src/endpoints.dart';
 export 'src/enums.dart';
 export 'src/identity.dart';
 export 'src/result.dart';
